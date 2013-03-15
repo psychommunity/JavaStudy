@@ -24,6 +24,17 @@ public class Test1 {
         System.out.print(n+"! = ");
         System.out.println(Test1.factorial(n));
         
+        System.out.println("======================");
+        Card c1=new Card();
+        Card c2=new Card();
+        c1.width=500;
+        c1.number=10;
+        System.out.println(c1.width);
+        System.out.println(c2.width);
+        System.out.println(c1.number);
+        System.out.println(c2.number);
+        
+        
     }
     public static long factorial(int n){
         long result=1;
@@ -31,5 +42,12 @@ public class Test1 {
             result*=i;
         }
         return result;
-    }
+    }    
+}
+
+class Card{
+    String kind;
+    int number;
+    static int width=100;
+    static int height=250;
 }
