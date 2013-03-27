@@ -1,0 +1,83 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+#include "openssl/crypto/des/des.h"
+#include <malloc.h>
+
+
+char * Encrypt( char *Key, char *Msg, int size){
+
+  static char* Res;
+	int n = 0;
+	DES_cblock Key2;
+	DES_key_schedule schedule;
+
+	Res = ( char *)malloc(size);
+
+	memcpy(Key2, Key, 8);
+	DES_set_odd_parity(&Key2);
+	DES_set_key_checked(&Key2,&schedule);
+
+	DES_cfb64_encrypt((unsigned char *) Msg, (unsigned char *) Res,size,&schedule, &Key2, &n, DES_ENCRYPT);
+	return (Res);
+};
+
+char * Decrypt(char *Key, char *Msg, int size){
+	static char* Res;
+	int n = 0;
+	
+	DES_cblock Key2;
+	DES_key_schedule schedule ;
+	
+	Res = (char *) malloc(size);
+
+	memcpy(Key2, Key,8);
+	DES_set_odd_parity(&Key2);
+	DES_set_key_checked(&Key2, &schedule);
+
+	DES_cfb64_encrypt((unsigned char *) Msg, (unsigned char *) Res, size, &schedule, &Key2, &n, DES_DECRYPT);
+
+return (Res);
+
+};
+
+int main(){
+	
+	char key[20]={0} ;
+	char clear[30] = {0};
+	char *decrypted;
+	char *encrypted;
+	char y='y';
+	
+	while(y=='y' || y == 'Y'){
+		
+		//fflush(stdin);
+	 	printf("원문을 입력하세요 : ");
+		gets(clear);
+		
+		printf("키를 입력하세요 : ");
+		gets(key);
+		fflush(stdin);	
+
+		encrypted=malloc(sizeof(clear));
+		decrypted=malloc(sizeof(clear));
+	
+		printf("Clear text \t : %s \n",clear);
+		memcpy(encrypted,Encrypt(key,clear,sizeof(clear)),sizeof(clear));
+		printf("Encrypted text\t : %s \n",encrypted);
+		memcpy(decrypted,Decrypt(key,encrypted,sizeof(clear)),sizeof(clear));
+		printf("Decrypted text\t : %s \n",decrypted);	
+		printf("계속 입력하시겠습니까? 계속 y \n");
+		
+		gets(&y);
+		fflush(stdin);		
+	}
+
+	
+
+	return (0);
+
+
+
+}
+
